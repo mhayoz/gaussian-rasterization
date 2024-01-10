@@ -217,6 +217,7 @@ int CudaRasterizer::Rasterizer::forward(
 	const bool prefiltered,
 	float* out_color,
 	float* out_depth,
+	float* out_alpha,
 	int* radii,
 	bool debug)
 {
@@ -329,6 +330,7 @@ int CudaRasterizer::Rasterizer::forward(
 		feature_ptr,
 		geomState.depths,
 		geomState.conic_opacity,
+		out_alpha,
 		imgState.accum_alpha,
 		imgState.n_contrib,
 		background,

@@ -268,6 +268,7 @@ renderCUDA(
 	const float* __restrict__ features,
 	const float* __restrict__ depths,
 	const float4* __restrict__ conic_opacity,
+	float* __restrict__ out_alpha,
 	float* __restrict__ final_T,
 	uint32_t* __restrict__ n_contrib,
 	const float* __restrict__ bg_color,
@@ -303,6 +304,7 @@ renderCUDA(
 	uint32_t contributor = 0;
 	uint32_t last_contributor = 0;
 	float C[CHANNELS] = { 0 };
+	float weight = 0;
 	float D = { 0 };
 
 	// Iterate over batches until all done or range is complete
@@ -357,7 +359,7 @@ renderCUDA(
 			for (int ch = 0; ch < CHANNELS; ch++)
 				C[ch] += features[collected_id[j] * CHANNELS + ch] * alpha * T;
 			D += depths[collected_id[j]] * alpha * T;
-
+            weight += alpha * T;
 			T = test_T;
 
 			// Keep track of last range entry to update this
@@ -374,6 +376,7 @@ renderCUDA(
 		n_contrib[pix_id] = last_contributor;
 		for (int ch = 0; ch < CHANNELS; ch++)
 			out_color[ch * H * W + pix_id] = C[ch] + T * bg_color[ch];
+		out_alpha[pix_id] = weight; //1 - T;
 		out_depth[pix_id] = D;
 	}
 }
@@ -387,6 +390,7 @@ void FORWARD::render(
 	const float* colors,
 	const float* depths,
 	const float4* conic_opacity,
+	float* out_alpha,
 	float* final_T,
 	uint32_t* n_contrib,
 	const float* bg_color,
@@ -401,6 +405,7 @@ void FORWARD::render(
 		colors,
 		depths,
 		conic_opacity,
+		out_alpha,
 		final_T,
 		n_contrib,
 		bg_color,
