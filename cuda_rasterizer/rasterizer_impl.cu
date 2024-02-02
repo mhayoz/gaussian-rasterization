@@ -205,6 +205,7 @@ int CudaRasterizer::Rasterizer::forward(
 	const float* means3D,
 	const float* shs,
 	const float* colors_precomp,
+	const float* semantics,
 	const float* opacities,
 	const float* scales,
 	const float scale_modifier,
@@ -218,6 +219,7 @@ int CudaRasterizer::Rasterizer::forward(
 	float* out_color,
 	float* out_depth,
 	float* out_alpha,
+	float* out_semantics,
 	int* radii,
 	bool debug)
 {
@@ -328,9 +330,11 @@ int CudaRasterizer::Rasterizer::forward(
 		width, height,
 		geomState.means2D,
 		feature_ptr,
+		semantics,
 		geomState.depths,
 		geomState.conic_opacity,
 		out_alpha,
+		out_semantics,
 		imgState.accum_alpha,
 		imgState.n_contrib,
 		background,

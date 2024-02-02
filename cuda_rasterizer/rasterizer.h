@@ -38,6 +38,7 @@ namespace CudaRasterizer
 			const float* means3D,
 			const float* shs,
 			const float* colors_precomp,
+			const float* semantics,
 			const float* opacities,
 			const float* scales,
 			const float scale_modifier,
@@ -51,6 +52,7 @@ namespace CudaRasterizer
 			float* out_color,
 			float* out_depth,
 			float* out_alpha,
+			float* out_semantics,
 			int* radii = nullptr,
 			bool debug = false);
 
